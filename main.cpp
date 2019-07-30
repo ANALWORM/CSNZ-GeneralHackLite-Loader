@@ -1,7 +1,8 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <windows.h>
 #include <ctime>
+#include <conio.h>
 #include "RAW.h"
 #include "MMap.h"
 #include "Strings.h"
@@ -11,7 +12,8 @@
 HWND hGame;
 DWORD pID;
 
-/*void Inject()
+
+void MMAP()
 {
 	PVOID rData = reinterpret_cast<char*>(RAWData);
 	pIDH = (PIMAGE_DOS_HEADER)rData;
@@ -43,14 +45,14 @@ DWORD pID;
 	ManualInject.ImportDirectory = (PIMAGE_IMPORT_DESCRIPTOR)((LPBYTE)image + pINH->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
 	winapi.hWriteProcessMemory(hProc, mem, &ManualInject, sizeof(MANUAL_INJECT), NULL);
 	winapi.hWriteProcessMemory(hProc, (PVOID)((PMANUAL_INJECT)mem + 1), LoadDll, (DWORD)LoadDllEnd - (DWORD)LoadDll, NULL);
-	//hThread = winapi.hCreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)((PMANUAL_INJECT)mem + 1), mem, 0, NULL);
-	hThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)((PMANUAL_INJECT)mem + 1), mem, 0, NULL); // Create a remote thread to execute the loader code
+	hThread = winapi.hCreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)((PMANUAL_INJECT)mem + 1), mem, 0, NULL);
+	//hThread = CreateRemoteThread(hProc, NULL, 0, (LPTHREAD_START_ROUTINE)((PMANUAL_INJECT)mem + 1), mem, 0, NULL); // Create a remote thread to execute the loader code
 
 	winapi.hWaitForSingleObject(hThread, INFINITE);
 	GetExitCodeThread(hThread, &ExitCode);
-}*/
+}
 
-void Inject()
+void LoadLib()
 {
 	LPVOID RemoteString, LoadLibAdd;
 	char PathToTemp[MAX_PATH] = { 0 }, buf[MAX_PATH] = { 0 };
@@ -129,11 +131,15 @@ void main()
 
 	do
 	{
-		hGame = winapi.hFindWindowA(0, GAME_NAME);
+		hGame = winapi.hFindWindowA(0, "Game.exe");
 	} while (hGame == NULL);
 
-	Inject();
+	ColorText("Select the inject method:\n1. MMap\n2. LoadLibrary\n", WHITE);
 
+	char input = _getch();
+	if (input == '1') MMAP();
+	else if (input == '2') LoadLib();
+	
 	system(CLS);
 	ColorText(GAME, WHITE);
 	ColorText(FOUND, GREEN);
