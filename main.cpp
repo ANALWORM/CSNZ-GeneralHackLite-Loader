@@ -131,7 +131,7 @@ void main()
 
 	do
 	{
-		hGame = winapi.hFindWindowA(0, "Game.exe");
+		hGame = winapi.hFindWindowA(0, "Counter-Strike Nexon: Zombies");
 	} while (hGame == NULL);
 
 	ColorText("Select the inject method:\n1. MMap\n2. LoadLibrary\n", WHITE);
